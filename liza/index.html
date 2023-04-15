@@ -1,61 +1,78 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0 maximum-scale=1.0">
    <meta http-equiv="X-UA-Compatible" content="ie=edge">
    <title>Задания для Лизочка</title>
    <style>
-		html {
-			line-height: 1.15;
-			/* 1 */
-			-webkit-text-size-adjust: 100%;
-			/* 2 */
-			font-size: 10px;
-		}
+      html {
+         line-height: 1.15;
+         /* 1 */
+         -webkit-text-size-adjust: 100%;
+         /* 2 */
+         font-size: 10px;
+      }
 
+      * {
+         color: #FFFAF0;
+         font-size: min(max(16px, calc(1.6rem + (22 - 16) * ((100vw - 360px) / (1600 - 360)))), 22px);
+         font-family: sans-serif;
+         line-height: 160%;
+      }
 
-		body {
-			margin: 0;
-		}
+      body {
+         margin: 0;
+         background-color: #1E2941;
+         padding: 0 min(max(15px, calc(1.5rem + (105 - 15) * ((100vw - 360px) / (1600 - 360)))), 105px);
+         display: flex;
+         flex-direction: column;
+         justify-content: space-between;
+      }
 
-		main {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			height: 100%;
-			min-height: 100vh;
-			width: 100%;
-			background-color: #1E2941;
-		}
+      h1 {
+         text-transform: uppercase;
+         letter-spacing: 3px;
+         font-size: min(max(22px, calc(2.2rem + (40 - 22) * ((100vw - 360px) / (1600 - 360)))), 60px);
 
-		p {
-			color: #FFFAF0;
-			font-family: sans-serif;
-			font-weight: 700;
-			font-size: min(max(22px, calc(2.2rem + (82 - 26) * ((100vw - 360px) / (1600 - 360)))), 48px);
-			text-align: center;
-			text-transform: uppercase;
-			letter-spacing: 3px;
-			line-height: 160%;
-		}
-		
-		#php {
-			
-		}
-	</style>
+      }
+
+      ul,
+      ol,
+      li {
+         padding: 0;
+         list-style-position: inside;
+      }
+
+      a {
+         text-decoration: none;
+      }
+
+      li,
+      a {
+         transition: color .3s ease;
+      }
+
+      li:hover,
+      li:hover a {
+         color: #614E27;
+      }
+   </style>
 </head>
+
 <body>
-<header class="header">
-   
-</header>
-<main class="main">
-   <ul>
-      <li><a href="./lesson1/">введение в HTML</a></li>
-      <li><a href="./lesson2/">подключение шрифтов валидация</a></li>
-      <li><a href="./lesson3/">работа с фоном (я не уверен что это работа с фоном)</a></li>
-   </ul>
-</main>
-<footer class="footer"></footer>
+   <header class="header">
+      <h1>Задания для Лизочка</h1>
+   </header>
+   <main class="main">
+      <ol>
+         <li><a href="./lesson1/">введение в HTML</a></li>
+         <li><a href="./lesson2/">подключение шрифтов валидация</a></li>
+         <li><a href="./lesson3/">работа с фоном (я не уверен что это работа с фоном)</a></li>
+      </ol>
+   </main>
+   <footer class="footer"></footer>
 </body>
+
 </html>
