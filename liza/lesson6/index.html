@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 maximum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>позиционирование</title>
+    <style>
+        .left,
+        .right {
+            background-color: darkcyan;
+            width: 200px;
+            height: 200px;
+        }
+
+        .left {
+            position: relative;
+            left: 223px;
+            top: 42px;
+        }
+
+        .center {
+            position: absolute;
+            width: 535px;
+            height: 535px;
+            top: 5px;
+            left: 408px;
+            background-color: peru;
+        }
+
+        .eye-left {
+            position: absolute;
+            width: 44px;
+            height: 44px;
+            background-color: green;
+            top: 89px;
+            left: 91px;
+        }
+
+        .eye-right {
+            position: absolute;
+            width: 44px;
+            height: 44px;
+            background-color: green;
+            top: 89px;
+            left: 402px;
+        }
+
+        .mouth {
+            width: 357px;
+            height: 36px;
+            background-color: red;
+            top: 454px;
+            position: absolute;
+            left: 89px;
+        }
+
+        .right {
+            top: 50px;
+            position: absolute;
+            left: 942px;
+        }
+
+
+        .olymp {
+			position: relative;
+			display: flex;
+			flex-wrap: wrap;
+			width: 450px;
+			justify-content: center;
+			gap: 10px;
+            top: 500px;
+		}
+
+		.olymp div {
+			border-radius: 50%;
+			width: 100px;
+			height: 100px;
+			border: solid 10px black;
+		}
+
+		div.blue {
+			border-color: blue;
+		}
+
+		div.red {
+			border-color: red;
+		}
+
+		div.yellow {
+			border-color: yellow;
+			margin-top: -70px;
+		}
+
+		div.green {
+			border-color: green;
+			margin-top: -70px;
+		}
+    </style>
+</head>
+
+<body>
+    <div class="cheba">
+        <div class="left"></div>
+        <div class="center">
+            <div class="eye-left"></div>
+            <div class="eye-right"></div>
+            <div class="mouth"></div>
+        </div>
+        <div class="right"></div>
+    </div>
+    <div class="olymp">
+		<div class="blue"></div>
+		<div class="black"></div>
+		<div class="red"></div>
+		<div class="yellow"></div>
+		<div class="green"></div>
+	</div>
+</body>
+
+</html>
