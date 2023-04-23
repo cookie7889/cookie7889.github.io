@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 maximum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>грид</title>
+    <style>
+        @font-face {
+            font-family: 'Montserrat';
+            src: url('./Montserrat-Bold.ttf') format('truetype');
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'Montserrat';
+            src: url('./Montserrat-Regular.ttf') format('truetype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'Merriweather';
+            src: url('./Merriweather-Regular.ttf') format('truetype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            color: #fff;
+            box-sizing: border-box;
+        }
+
+        .container {
+            padding: 0 25px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .news {
+            padding: 90px 0;
+            background-color: #FF3C42;
+        }
+
+        .news h1 {
+            font-family: 'Arial';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 200px;
+            line-height: 230px;
+            letter-spacing: 0.17em;
+            text-transform: uppercase;
+            text-align: end;
+            margin-bottom: 300px;
+        }
+
+        .news__wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 155px;
+        }
+
+        .news__item {
+            display: flex;
+            flex-direction: row;
+            gap: 60px;
+        }
+
+        .news__item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .news__item-img {
+            width: 45%;
+            min-width: 896px;
+            height: 1088px;
+        }
+
+        .news__item-img img {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+        }
+
+        .news__item-content {
+            width: 55%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .news__item-content h2 {
+            font-family: 'Arial';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 100px;
+            line-height: 115px;
+            align-items: center;
+            letter-spacing: 0.17em;
+            text-transform: uppercase;
+        }
+
+        .news__item:nth-child(even) h2 {
+            text-align: right;
+        }
+
+        .news__item-content p {
+            font-family: 'Arial';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 32px;
+            line-height: 37px;
+            align-items: center;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            max-width: 883px;
+        }
+
+        .news__item:nth-child(even) p {
+            text-align: right;
+            margin-left: auto;
+            margin-right: 0;
+        }
+
+        .news__item-content a {
+            font-family: 'Arial';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 32px;
+            line-height: 37px;
+            display: flex;
+            align-items: center;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="main">
+        <section class="news">
+            <div class="container">
+                <h1>Новости</h1>
+
+                <div class="news__wrapper">
+                    <article class="news__item">
+                        <div class="news__item-img">
+                            <img src="./lilpil1.jpg" alt="">
+                        </div>
+                        <div class="news__item-content">
+                            <div class="under-title">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+
+                            <h2>МЫ&nbsp;ТУТ БЫЛИ НА&nbsp;ПОДКСТЕ...</h2>
+
+                            <p>В этот раз мы пришли в мета-рюмочную Lil Pil, чтобы поговорить о культуре питья,
+                                необычный алкоголь, концепции заведений и напиться в усмерть.</p>
+
+                            <a href="#" class="link">ЧИТАТЬ ПОЛНОСТЬТЮ&nbsp;---------------------></a>
+                        </div>
+                    </article>
+                    <article class="news__item">
+                        <div class="news__item-img">
+                            <img src="./lilpil2.jpg" alt="">
+                        </div>
+                        <div class="news__item-content">
+                            <div class="under-title">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+
+                            <h2>ХЕРАК И&nbsp;ФИЛ</h2>
+
+                            <p>До двух ночи сегодня будет лить и пить. Не будем расписывать, что за экземпляр на фото.
+                                Гуглите Яндексите сами. А сегодня опрокинуть содержимое этой бутылки себе во внутрь
+                                можно с шести вечера. Надо только 250₽ за порцию перед этим в кассу внести.</p>
+
+                            <a href="#" class="link">ЧИТАТЬ ПОЛНОСТЬТЮ&nbsp;---------------------></a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>

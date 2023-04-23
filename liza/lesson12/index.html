@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 maximum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>работа с формами</title>
+</head>
+
+<body>
+    <form action="#" method="post">
+        <label for="name">Имя:</label>
+        <input type="text" id="name" name="name" required>
+
+        <br>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <br>
+
+        <label for="password">Пароль:</label>
+        <input type="password" id="password" name="password" minlength="8" required>
+
+        <br>
+
+        <label for="age">Возраст:</label>
+        <input type="number" id="age" name="age" min="18" max="99" required>
+
+        <br>
+
+        <label for="gender">Пол:</label>
+        <select id="gender" name="gender" required>
+            <option value="">Выберите пол</option>
+            <option value="male">Мужской</option>
+            <option value="female">Женский</option>
+            <option value="other">Другой</option>
+        </select>
+
+        <br>
+
+        <label for="bio">О себе:</label>
+        <textarea id="bio" name="bio" rows="5" cols="30"></textarea>
+
+        <br>
+
+        <fieldset>
+            <legend>Выберите свой любимый цвет:</legend>
+            <input type="radio" id="red" name="color" value="red" required>
+            <label for="red">Красный</label>
+            <input type="radio" id="green" name="color" value="green" required>
+            <label for="green">Зеленый</label>
+            <input type="radio" id="blue" name="color" value="blue" required>
+            <label for="blue">Синий</label>
+        </fieldset>
+
+        <br>
+
+        <fieldset>
+            <legend>Выберите ваши любимые фрукты:</legend>
+            <input type="checkbox" id="apple" name="fruits" value="apple">
+            <label for="apple">Яблоко</label>
+            <input type="checkbox" id="banana" name="fruits" value="banana">
+            <label for="banana">Банан</label>
+            <input type="checkbox" id="orange" name="fruits" value="orange">
+            <label for="orange">Апельсин</label>
+            <input type="checkbox" id="grape" name="fruits" value="grape">
+            <label for="grape">Виноград</label>
+        </fieldset>
+
+        <br>
+
+        <label for="file">Выберите файл:</label>
+        <input type="file" id="file" name="file">
+
+        <br>
+
+        <button type="submit">Отправить</button>
+        <button type="reset">Сбросить</button>
+    </form>
+</body>
+</html>
