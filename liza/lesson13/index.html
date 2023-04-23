@@ -5,32 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0 maximum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>грид</title>
+    <title>грид + итог</title>
     <style>
-        @font-face {
-            font-family: 'Montserrat';
-            src: url('./Montserrat-Bold.ttf') format('truetype');
-            font-weight: 700;
-            font-style: normal;
-            font-display: swap;
-        }
-
-        @font-face {
-            font-family: 'Montserrat';
-            src: url('./Montserrat-Regular.ttf') format('truetype');
-            font-weight: 400;
-            font-style: normal;
-            font-display: swap;
-        }
-
-        @font-face {
-            font-family: 'Merriweather';
-            src: url('./Merriweather-Regular.ttf') format('truetype');
-            font-weight: 400;
-            font-style: normal;
-            font-display: swap;
-        }
-
         * {
             margin: 0;
             padding: 0;
@@ -42,6 +18,115 @@
             padding: 0 25px;
             width: 100%;
             margin: 0 auto;
+        }
+
+        .header {
+            padding-top: 50px;
+            background-color: #00419B;
+            padding-bottom: 80px;
+        }
+
+        .top-header {
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            gap: 80px;
+            margin-bottom: 20px;
+        }
+
+        .top-header a {
+            font-family: 'Arial';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 32px;
+            line-height: 37px;
+            display: flex;
+            align-items: center;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            text-decoration: none;
+        }
+
+
+        .h1 {
+            font-family: 'Arial';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 200px;
+            line-height: 230px;
+            display: flex;
+            flex-direction: column;
+            letter-spacing: 0.17em;
+            text-transform: uppercase;
+            margin: 0 9.5px;
+        }
+        
+        .h1 div {
+            display: flex;
+            align-items: center;
+            gap: 36px;
+        }
+
+        .h1 .line {
+            height: 15px;
+            width: 100%;
+            background-color: #fff;
+        }
+
+        .banner {
+            display: flex;
+        }
+
+        .banner img {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+        }
+
+        .time {
+            padding-top: 70px;
+            background-color: #00419B;
+            padding-bottom: 385px;
+            font-family: 'Arial';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 48px;
+            line-height: 55px;
+            letter-spacing: 0.17em;
+            text-transform: uppercase;
+            position: relative;
+        }
+
+        .bg-img {
+            display: flex;
+            position: absolute;
+            top: 99px;
+            left: 25px;
+        }
+
+        .bg-img img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .time__wrapper {
+            display: flex;
+            gap: 60px;
+            justify-content: center;
+        }
+
+        .time .adres {
+            text-align: right;
+        }
+
+        .time .schedule {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .time .schedule ._right {
+            text-align: right;
         }
 
         .news {
@@ -96,6 +181,22 @@
             justify-content: space-between;
         }
 
+        .under-title {
+            display: flex;
+            gap: 10px;
+        }
+
+        .under-title span {
+            width: 75px;
+            height: 10px;
+            background-color: #fff;
+        }
+
+        .under-title span:first-of-type,
+        .under-title span:last-of-type {
+            width: 10px;
+        }
+
         .news__item-content h2 {
             font-family: 'Arial';
             font-style: normal;
@@ -142,14 +243,70 @@
             text-decoration: none;
         }
     </style>
+
+
+
 </head>
 
 <body>
+    <header class="header">
+        <div class="container">
+            <div class="top-header">
+                <a href="#">МЕНЮ</a>
+                <div class="logo">
+                    <img src="./logo.png" alt="">
+                </div>
+                <a href="#news">НОВОСТИ</a>
+            </div>
+        </div>
+
+        <div class="h1">
+            <div class="meta">
+                <span>Мета</span>
+                <span class="line"></span>
+            </div>
+            <div class="rymochka">
+                <span class="line"></span>
+                <span>рюмочная</span>
+            </div>
+        </div>
+    </header>
     <main class="main">
-        <section class="news">
+        <section class="banner">
+            <img src="./banner.jpg" alt="">
+        </section>
+        <section class="time">
+            <div class="container">
+                <div class="time__wrapper">
+                    <div class="adres">
+                        россия, Тула,<br>
+                        Советская улица, 11
+                    </div>
+                    <div class="schedule">
+                        <div class="schedule__row">
+                            <p>вторник — четверг</p>
+                            <p>18:00–00:00</p>
+                        </div>
+
+                        <div class="schedule__row _right">
+                            <p>пятницa / субборта</p>
+                            <p>18:00–00:00</p>
+                        </div>
+
+                        <div class="schedule__row">
+                            <p>воскресенье —</p>
+                            <p>17:00–01:00</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-img">
+                    <img src="./logo2.png" alt="">
+                </div>
+            </div>
+        </section>
+        <section class="news" id="news">
             <div class="container">
                 <h1>Новости</h1>
-
                 <div class="news__wrapper">
                     <article class="news__item">
                         <div class="news__item-img">
