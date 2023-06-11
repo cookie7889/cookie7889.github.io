@@ -48,7 +48,7 @@
             height: 100%;
         }
 
-        .slider__range-bg {
+        /*   .slider__range-bg {
             background: #a1c0c8;
         }
 
@@ -57,11 +57,15 @@
             background: linear-gradient(90deg, grey 0%, grey 0%, blue 0%, blue 100%, grey 100%, grey 100%);
             background-size: 100%;
 
-        }
+        } */
 
         .slider__range-btn {
             align-items: center;
             justify-content: center;
+
+            background: blue;
+            background: linear-gradient(90deg, grey 0%, grey 0%, blue 0%, blue 100%, grey 100%, grey 100%);
+            background-size: 100%;
         }
 
         .slider__range-handle {
@@ -95,8 +99,6 @@
 
 
             <div class="slider__range">
-                <div class="slider__range-bg"></div>
-                <div class="slider__range-active"></div>
                 <div class="slider__range-btn">
                     <a class="slider__range-handle _left" style="left:0;" href="javascript:void(0)"
                         id="left_slider_"></a>
@@ -110,9 +112,16 @@
     </div>
 
     <script>
+
+        //ограничение значения 
+        function minMax(value, min, max) {
+            return Math.max(min, Math.min(max, value))
+        }
+
+
+
         document.addEventListener('DOMContentLoaded', function () {
-            let minPrice = 60;
-            let maxPrice = 690723;
+
             let ball = document.querySelector('.slider__range-handle._left')
             let ballRight = document.querySelector('.slider__range-handle._right')
             let ballWrapp = document.querySelector('.slider__range-btn')
@@ -120,138 +129,182 @@
             let ballPosLeft = 0;
             let ballPosRight = rect.width - ballRight.getBoundingClientRect().width;
 
-            document.querySelector('.max-slider').addEventListener('change', function (e) {
 
 
-                let dlinna = maxPrice - minPrice;
-                let proc = (e.target.value - minPrice) * 100 / dlinna;
 
-                ballPosRight = (rect.width - ball.getBoundingClientRect().width - ball.getBoundingClientRect().width) / 100 * proc + ball.getBoundingClientRect().width;
-                document.querySelector('.slider__range-active').style.background = `linear-gradient(90deg, grey 0%, grey ${ballPosLeft + ball.getBoundingClientRect().width}px, blue ${ballPosLeft + ball.getBoundingClientRect().width}px, blue ${ballPosRight}px, ${ballPosRight}px, grey 100%)`;
-                ballRight.style.left = `${ballPosRight}px`;
 
-                e.target.value = Math.max(minPrice, Math.min(maxPrice, e.target.value))
+            let leftSlider = document.querySelector('.slider__range-handle._left'),
+                rightSlider = document.querySelector('.slider__range-handle._right'),
+                tracker = document.querySelector('.slider__range-btn'),
+                minInput = document.querySelector('.min-slider'),
+                maxInput = document.querySelector('.max-slider'),
+                minPrice = 60,
+                maxPrice = 690723;
 
-            });
 
-            ballRight.onmousedown = function (event) { // (1) отследить нажатие
-                let shiftX = event.clientX - ballRight.getBoundingClientRect().left;
+            function updateTrack(left, right) {
+                return tracker.style.background = `linear-gradient(90deg, grey 0%, grey ${left}px, blue ${left}px, blue ${right}px, ${right}px, grey 100%)`;
+            }
 
-                moveAt(event.pageX - rect.left);
+            let leftSliderWidth = leftSlider.getBoundingClientRect().width,
+                rightSliderWidth = rightSlider.getBoundingClientRect().width,
+                trackerWidth = tracker.getBoundingClientRect().width,
+                trackerLeft = tracker.getBoundingClientRect().left,
+                trackerRight = tracker.getBoundingClientRect().right,
+                posLeft = 0 + leftSliderWidth,
+                posRight = trackerWidth - rightSliderWidth;
 
-                // передвинуть мяч под координаты курсора
-                // и сдвинуть на половину ширины/высоты для центрирования
+            leftSlider.addEventListener('mousedown', function (event) {
+                let shiftX = event.clientX - leftSlider.getBoundingClientRect().left;
+
+                moveAt(event.pageX - trackerLeft);
+
                 function moveAt(pageX) {
-                    ballPosRight = Math.max(ballPosLeft + ball.getBoundingClientRect().width, Math.min(rect.width - ballRight.getBoundingClientRect().width, pageX - shiftX));
-                    ballRight.style.left = `${ballPosRight}px`;
-                    document.querySelector('.slider__range-active').style.background = `linear-gradient(90deg, grey 0%, grey ${ballPosLeft + ball.getBoundingClientRect().width}px, blue ${ballPosLeft + ball.getBoundingClientRect().width}px, blue ${ballPosRight}px, ${ballPosRight}px, grey 100%)`;
-                    let dlinna = rect.width - ball.getBoundingClientRect().width - ball.getBoundingClientRect().width;
+                    posLeft = Math.max(leftSliderWidth, Math.min(trackerWidth - rightSliderWidth, pageX - shiftX + leftSliderWidth));
 
-                    let proc = (ballPosRight - ball.getBoundingClientRect().width) * 100 / dlinna;
-                    document.querySelector('.max-slider').value = Math.round((maxPrice - minPrice) / 100 * proc + minPrice);
+                    leftSlider.style.left = `${posLeft - leftSliderWidth}px`;
+
+                    if (posLeft >= posRight) {
+                        posRight = Math.max(posLeft, Math.min(trackerWidth - rightSliderWidth, pageX - shiftX));
+                        ballRight.style.left = `${posLeft}px`;
+                        maxInput.value = Math.round((maxPrice - minPrice) / 100 * ((posRight - leftSliderWidth) * 100 / (trackerWidth - leftSliderWidth - rightSliderWidth)) + minPrice);
+                    }
+
+                    updateTrack(posLeft, posRight);
+                    minInput.value = Math.round((maxPrice - minPrice) / 100 * ((posLeft - leftSliderWidth) * 100 / (trackerWidth - leftSliderWidth - rightSliderWidth)) + minPrice);
                 }
 
                 function onMouseMove(event) {
-                    moveAt(event.pageX - rect.left);
+                    moveAt(event.pageX - trackerLeft);
                 }
 
-                // (3) перемещать по экрану
+                document.addEventListener('mousemove', onMouseMove);
+
+                document.addEventListener('mouseup', function () {
+                    document.removeEventListener('mousemove', onMouseMove);
+                    leftSlider.onmouseup = null;
+                });
+            });
+
+            rightSlider.addEventListener('mousedown', function (event) {
+                let shiftX = event.clientX - rightSlider.getBoundingClientRect().left;
+
+                moveAt(event.pageX - trackerLeft);
+
+                function moveAt(pageX) {
+                    posRight = Math.max(posLeft, Math.min(trackerWidth - rightSliderWidth, pageX - shiftX));
+                    ballRight.style.left = `${posRight}px`;
+
+                    if (posLeft >= posRight) {
+                        posLeft = Math.max(leftSliderWidth, Math.min(trackerWidth - rightSliderWidth, pageX - shiftX));
+                        leftSlider.style.left = `${posLeft - leftSliderWidth}px`;
+                        minInput.value = Math.round((maxPrice - minPrice) / 100 * ((posLeft - leftSliderWidth) * 100 / (trackerWidth - leftSliderWidth - rightSliderWidth)) + minPrice);
+                    }
+
+                    updateTrack(posLeft, posRight);
+
+                    maxInput.value = Math.round((maxPrice - minPrice) / 100 * ((posRight - leftSliderWidth) * 100 / (trackerWidth - leftSliderWidth - rightSliderWidth)) + minPrice);
+                }
+
+                function onMouseMove(event) {
+                    moveAt(event.pageX - trackerLeft);
+                }
+
                 document.addEventListener('mousemove', onMouseMove);
 
                 document.onmouseup = function () {
                     document.removeEventListener('mousemove', onMouseMove);
                     ballRight.onmouseup = null;
                 };
-            };
+            });
 
-            ball.onmousedown = function (event) { // (1) отследить нажатие
+            leftSlider.addEventListener('touchstart', function (event) {
+                let shiftX = event.touches[0].clientX - leftSlider.getBoundingClientRect().left;
 
-                // (2) подготовить к перемещению:
-                // разместить поверх остального содержимого и в абсолютных координатах
-                //ball.style.position = 'absolute';
-                //ball.style.zIndex = 1000;
-                // переместим в body, чтобы мяч был точно не внутри position:relative
-                //document.body.append(ball);
-                // и установим абсолютно спозиционированный мяч под курсор
-                let shiftX = event.clientX - ball.getBoundingClientRect().left;
-
-                moveAt(event.pageX - rect.left);
-
-                // передвинуть мяч под координаты курсора
-                // и сдвинуть на половину ширины/высоты для центрирования
-                function moveAt(pageX) {
-
-                    ballPosLeft = Math.max(0, Math.min(ballPosRight - ballRight.getBoundingClientRect().width, pageX - shiftX));
-                    ball.style.left = `${ballPosLeft}px`;
-
-                    document.querySelector('.slider__range-active').style.background = `linear-gradient(90deg, grey 0%, grey ${ballPosLeft + ball.getBoundingClientRect().width}px, blue ${ballPosLeft + ball.getBoundingClientRect().width}px, blue ${ballPosRight}px, ${ballPosRight}px, grey 100%)`;
-                }
-
-                function onMouseMove(event) {
-                    moveAt(event.pageX - rect.left);
-                }
-
-                // (3) перемещать по экрану
-                document.addEventListener('mousemove', onMouseMove);
-
-                // (4) положить мяч, удалить более ненужные обработчики событий
-                document.onmouseup = function () {
-                    document.removeEventListener('mousemove', onMouseMove);
-                    ball.onmouseup = null;
-                };
-            };
-
-
-            ballRight.addEventListener('touchstart', function (event) {
-                let shiftX = event.touches[0].clientX - ballRight.getBoundingClientRect().left;
+                moveAt(event.pageX - trackerLeft);
 
                 function moveAt(pageX) {
-                    ballPosRight = Math.max(ballPosLeft + ball.getBoundingClientRect().width, Math.min(rect.width - ballRight.getBoundingClientRect().width, pageX - shiftX));
-                    ballRight.style.left = ballPosRight + 'px';
-                    document.querySelector('.slider__range-active').style.background = 'linear-gradient(90deg, grey 0%, grey ' + (ballPosLeft + ball.getBoundingClientRect().width) + 'px, blue ' + (ballPosLeft + ball.getBoundingClientRect().width) + 'px, blue ' + ballPosRight + 'px, ' + ballPosRight + 'px, grey 100%)';
-                    let dlinna = rect.width - ball.getBoundingClientRect().width - ball.getBoundingClientRect().width;
-                    let proc = (ballPosRight - ball.getBoundingClientRect().width) * 100 / dlinna;
-                    document.querySelector('.max-slider').value = Math.round((maxPrice - minPrice) / 100 * proc + minPrice);
+                    posLeft = Math.max(leftSliderWidth, Math.min(trackerWidth - rightSliderWidth, pageX - shiftX + leftSliderWidth));
+
+                    leftSlider.style.left = `${posLeft - leftSliderWidth}px`;
+
+                    if (posLeft >= posRight) {
+                        posRight = Math.max(posLeft, Math.min(trackerWidth - rightSliderWidth, pageX - shiftX));
+                        ballRight.style.left = `${posLeft}px`;
+                        maxInput.value = Math.round((maxPrice - minPrice) / 100 * ((posRight - leftSliderWidth) * 100 / (trackerWidth - leftSliderWidth - rightSliderWidth)) + minPrice);
+                    }
+
+                    updateTrack(posLeft, posRight);
+                    minInput.value = Math.round((maxPrice - minPrice) / 100 * ((posLeft - leftSliderWidth) * 100 / (trackerWidth - leftSliderWidth - rightSliderWidth)) + minPrice);
                 }
 
                 function onTouchMove(event) {
-                    moveAt(event.touches[0].pageX - rect.left);
+                    moveAt(event.pageX - trackerLeft);
                 }
 
-                ballRight.addEventListener('touchmove', onTouchMove);
+                document.addEventListener('touchmove', onTouchMove);
 
-               /*  ballRight.addEventListener('touchend', function () {
-                    ballRight.removeEventListener('touchmove', onTouchMove);
-                    ballRight.removeEventListener('touchend');
+               /*  document.addEventListener('mouseup', function () {
+                    document.removeEventListener('mousemove', onMouseMove);
+                    leftSlider.onmouseup = null;
                 }); */
             });
 
-            ball.addEventListener('touchstart', function (event) {
-                let shiftX = event.touches[0].clientX - ball.getBoundingClientRect().left;
+            rightSlider.addEventListener('touchstart', function (event) {
+                let shiftX = event.touches[0].clientX - rightSlider.getBoundingClientRect().left;
+
+                moveAt(event.pageX - trackerLeft);
 
                 function moveAt(pageX) {
-                    ballPosLeft = Math.max(0, Math.min(ballPosRight - ballRight.getBoundingClientRect().width, pageX - shiftX));
-                    ball.style.left = ballPosLeft + 'px';
-                    document.querySelector('.slider__range-active').style.background = 'linear-gradient(90deg, grey 0%, grey ' + (ballPosLeft + ball.getBoundingClientRect().width) + 'px, blue ' + (ballPosLeft + ball.getBoundingClientRect().width) + 'px, blue ' + ballPosRight + 'px, ' + ballPosRight + 'px, grey 100%)';
+                    posRight = Math.max(posLeft, Math.min(trackerWidth - rightSliderWidth, pageX - shiftX));
+                    ballRight.style.left = `${posRight}px`;
+
+                    if (posLeft >= posRight) {
+                        posLeft = Math.max(leftSliderWidth, Math.min(trackerWidth - rightSliderWidth, pageX - shiftX));
+                        leftSlider.style.left = `${posLeft - leftSliderWidth}px`;
+                        minInput.value = Math.round((maxPrice - minPrice) / 100 * ((posLeft - leftSliderWidth) * 100 / (trackerWidth - leftSliderWidth - rightSliderWidth)) + minPrice);
+                    }
+
+                    updateTrack(posLeft, posRight);
+                    if (Math.round((maxPrice - minPrice) / 100 * ((posRight - leftSliderWidth) * 100 / (trackerWidth - leftSliderWidth - rightSliderWidth)) + minPrice))
+                        maxInput.value = Math.round((maxPrice - minPrice) / 100 * ((posRight - leftSliderWidth) * 100 / (trackerWidth - leftSliderWidth - rightSliderWidth)) + minPrice);
                 }
 
                 function onTouchMove(event) {
-                    moveAt(event.touches[0].pageX - rect.left);
+                    moveAt(event.touches[0].pageX - trackerLeft);
                 }
 
-                ball.addEventListener('touchmove', onTouchMove);
+                document.addEventListener('touchmove', onTouchMove);
 
-                ball.addEventListener('touchend', function () {
-                    //ball.removeEventListener('touchmove', onTouchMove);
-                    //ball.removeEventListener('touchend');
-                });
+              /*   document.onmouseup = function () {
+                    document.removeEventListener('mousemove', onMouseMove);
+                    ballRight.onmouseup = null;
+                }; */
             });
+
+            
+         
 
             document.ondragstart = function () {
                 return false;
             };
 
 
+
+            maxInput.addEventListener('change', function (e) {
+                posRight = (trackerWidth - leftSliderWidth - rightSliderWidth) / 100 * ((this.value - minPrice) * 100 / (maxPrice - minPrice)) + leftSliderWidth;
+                rightSlider.style.left = `${posRight}px`;
+                updateTrack(posLeft, posRight)
+                this.value = minMax(this.value, minPrice, maxPrice);
+            });
+
+            minInput.addEventListener('change', function (e) {
+                posLeft = (trackerWidth - leftSliderWidth - rightSliderWidth) / 100 * ((this.value - minPrice) * 100 / (maxPrice - minPrice)) + leftSliderWidth;
+                leftSlider.style.left = `${posLeft - leftSliderWidth}px`;
+                updateTrack(posLeft, posRight)
+                //console.log(posLeft)
+                this.value = minMax(this.value, minPrice, maxPrice);
+            });
         })
     </script>
 </body>
