@@ -200,6 +200,73 @@
                 };
             };
 
+            ballRight.ontouchstart = function (event) { // (1) отследить нажатие
+                let shiftX = event.clientX - ballRight.getBoundingClientRect().left;
+
+                moveAt(event.pageX - rect.left);
+
+                // передвинуть мяч под координаты курсора
+                // и сдвинуть на половину ширины/высоты для центрирования
+                function moveAt(pageX) {
+                    ballPosRight = Math.max(ballPosLeft + ball.getBoundingClientRect().width, Math.min(rect.width - ballRight.getBoundingClientRect().width, pageX - shiftX));
+                    ballRight.style.left = `${ballPosRight}px`;
+                    document.querySelector('.slider__range-active').style.background = `linear-gradient(90deg, grey 0%, grey ${ballPosLeft + ball.getBoundingClientRect().width}px, blue ${ballPosLeft + ball.getBoundingClientRect().width}px, blue ${ballPosRight}px, ${ballPosRight}px, grey 100%)`;
+                    let dlinna = rect.width - ball.getBoundingClientRect().width - ball.getBoundingClientRect().width;
+
+                    let proc = (ballPosRight - ball.getBoundingClientRect().width) * 100 / dlinna;
+                    document.querySelector('.max-slider').value = Math.round((maxPrice - minPrice) / 100 * proc + minPrice);
+                }
+
+                function onMouseMove(event) {
+                    moveAt(event.pageX - rect.left);
+                }
+
+                // (3) перемещать по экрану
+                document.addEventListener('touchmove', onMouseMove);
+
+                document.ontouchend = function () {
+                    document.removeEventListener('touchmove', onMouseMove);
+                    ballRight.onmouseup = null;
+                };
+            };
+
+            ball.ontouchstart = function (event) { // (1) отследить нажатие
+
+                // (2) подготовить к перемещению:
+                // разместить поверх остального содержимого и в абсолютных координатах
+                //ball.style.position = 'absolute';
+                //ball.style.zIndex = 1000;
+                // переместим в body, чтобы мяч был точно не внутри position:relative
+                //document.body.append(ball);
+                // и установим абсолютно спозиционированный мяч под курсор
+                let shiftX = event.clientX - ball.getBoundingClientRect().left;
+
+                moveAt(event.pageX - rect.left);
+
+                // передвинуть мяч под координаты курсора
+                // и сдвинуть на половину ширины/высоты для центрирования
+                function moveAt(pageX) {
+
+                    ballPosLeft = Math.max(0, Math.min(ballPosRight - ballRight.getBoundingClientRect().width, pageX - shiftX));
+                    ball.style.left = `${ballPosLeft}px`;
+
+                    document.querySelector('.slider__range-active').style.background = `linear-gradient(90deg, grey 0%, grey ${ballPosLeft + ball.getBoundingClientRect().width}px, blue ${ballPosLeft + ball.getBoundingClientRect().width}px, blue ${ballPosRight}px, ${ballPosRight}px, grey 100%)`;
+                }
+
+                function onMouseMove(event) {
+                    moveAt(event.pageX - rect.left);
+                }
+
+                // (3) перемещать по экрану
+                document.addEventListener('touchmove', onMouseMove);
+
+                // (4) положить мяч, удалить более ненужные обработчики событий
+                document.ontouchend = function () {
+                    document.removeEventListener('touchmove', onMouseMove);
+                    ball.onmouseup = null;
+                };
+            };
+
             document.ondragstart = function () {
                 return false;
             };
