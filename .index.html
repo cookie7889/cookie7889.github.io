@@ -52,6 +52,10 @@
             justify-content: flex-end;
             align-items: center;
         }
+
+        table {
+            grid-column: span 4;
+        }
     </style>
 </head>
 <div id="app">
@@ -71,7 +75,15 @@
 
             </aside>
             <section>
-                <article v-for="phone in phones">
+                <table>
+                    <tr>
+                        <td><a @click="sortParam=''">По умолчанию</a></td>
+                        <td><a @click="sortParam='title'">Модель</a></td>
+                        <td><a @click="sortParam='company'">Компания</a></td>
+                        <td><a @click="sortParam='price'">Цена</a></td>
+                    </tr>
+                </table>
+                <article v-for="phone in sortedList">
                     <header>{{phone.company}}</header>
                     <p>{{phone.title}}</p>
                     <p>{{phone.color}}</p>
@@ -136,7 +148,28 @@
         <button @click="addElement">Сохранить</button>
     </template>
     <template v-else-if="them==3">
+        <label>Логин</label>
+        <input type="text" v-model="user.login" placeholder="Введите логин" class="form-control" /><br>
 
+        <label>Пароль</label>
+        <input v-if="!pasShow" type="password" v-model="user.password" placeholder="Введите пароль" />
+        <input v-else type="text" v-model="user.password" placeholder="Введите пароль" />
+        <span @click="pasShow=!pasShow">{{pasShow?'скрыть':'показать'}}</span><br>
+
+        <label>Возраст</label>
+        <input type="number" v-model="user.age" min="18" placeholder="Введите возраст" class="form-control" /><br>
+        <label>Дата регистрации</label><br>
+        <input type="date" v-model="user.date" placeholder="Введите дату" class="form-control" />
+        <br>
+        <div>
+            <h3>Введенная информация</h3>
+            <p>Логин: {{user.login}}</p>
+            <p>Пароль: {{user.password}}</p>
+            <p>Возраст: {{age}}</p>
+            <p>Дата регистрации: {{user.date}}</p>
+            <input type="checkbox" id="checkbox" v-model="user.checked">
+            <label for="checkbox">{{ user.checked }}</label>
+        </div>
     </template>
     <template v-else-if="them==4">
         <p><input type="text" v-model="searchVal" /></p>
@@ -158,6 +191,7 @@
             return {
                 them: 1,
                 searchVal: '',
+                sortParam: '',
                 phones: [
                     { title: 'iPhone 12', company: 'Apple', price: 65000, color: 'red' },
                     { title: 'Galaxy S20', company: 'Samsung', price: 63000, color: 'grey' },
@@ -174,6 +208,16 @@
                 newCompany: '',
                 newPrice: '',
                 newColor: '',
+
+                user: [
+                    { login: '' },
+                    { password: '' },
+                    { date: '' },
+                    { age: '' },
+                    { checked: true },
+                ],
+
+                pasShow: false,
             }
         },
         computed: {
@@ -189,6 +233,15 @@
                     }
                 });
             },
+
+            sortedList() {
+                switch (this.sortParam) {
+                    case 'title': return this.phones.sort(sortByTitle);
+                    case 'company': return this.phones.sort(sortByCompany);
+                    case 'price': return this.phones.sort(sortByPrice);
+                    default: return this.phones;
+                }
+            }
 
 
         },
@@ -207,6 +260,10 @@
         },
     });
     vueApp.mount('#app');
+
+    const sortByTitle = (d1, d2) => (d1.title.toLowerCase() > d2.title.toLowerCase()) ? 1 : -1;
+    const sortByCompany = (d1, d2) => (d1.company.toLowerCase() > d2.company.toLowerCase()) ? 1 : -1;
+    const sortByPrice = (d1, d2) => (d1.price > d2.price) ? 1 : -1;
 </script>
 </body>
 

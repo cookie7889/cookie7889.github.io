@@ -1,13 +1,198 @@
-<!DOCTYPE html>
-<html lang="ru">
+<style>
+    * {
+        box-sizing: border-box;
+    }
+    .filter__param-values {
+        max-height: 500px;
+        opacity: 1;
+        transition: opacity .4s ease, max-height .4s ease;
+    }
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0 maximum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>JS course</title>
-</head>
-<body>
-    <script src="./script.js"></script>
-</body>
-</html>
+    .slider__value {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 35px;
+        padding: 50px;
+        position: relative;
+    }
+
+    .slider__range {
+        position: relative;
+        height: 6px;
+        background: #a1c0c8;
+        margin-bottom: 20px;
+        width: calc(100% - 24px);
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .slider__range-bg,
+    .slider__range-active,
+    .slider__range-btn {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        display: flex;
+        width: 100%;
+        height: 100%;
+    }
+
+    .slider__range-bg {
+        background: #a1c0c8;
+    }
+
+    .slider__range-active {
+        background: blue;
+        background: linear-gradient(90deg, grey 0%, grey 0%, blue 0%, blue 100%, grey 100%, grey 100%);
+        background-size: 100%;
+
+    }
+
+    .slider__range-btn {
+        align-items: center;
+        justify-content: center;
+    }
+
+    .slider__range-handle {
+        --size-ball: 24px;
+        display: flex;
+        width: var(--size-ball);
+        height: var(--size-ball);
+        position: absolute;
+        left: auto;
+        right: auto;
+        background: blue;
+       /*  border: solid 2px #fff; */
+        border-radius: 100%;
+    }
+</style>
+
+<div class="filter__param-values">
+    <div class="slider">
+        <div class="slider__value">
+            <div class="slider__value-item _min">
+                <label for="minPrice">От 60</label>
+                <input class="min-slider" type="text" name="minPrice" id="minPrice>" placeholder="60" size="5">
+            </div>
+            <div class="slider__value-item _max">
+                <label for="maxPrice">До 690723</label>
+                <input class="max-slider" type="text" name="maxPrice" id="maxPrice" placeholder="690723" size="5">
+            </div>
+        </div>
+
+
+        <div class="slider__range">
+            <div class="slider__range-bg"></div>
+            <div class="slider__range-active"></div>
+            <div class="slider__range-btn">
+                <a class="slider__range-handle _left" style="left:0;" href="javascript:void(0)" id="left_slider_"></a>
+                <a class="slider__range-handle _right" style="right:0;" href="javascript:void(0)"
+                    id="right_slider_"></a>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        let minPrice = 60;
+        let maxPrice = 690723;
+        let ball = document.querySelector('.slider__range-handle._left')
+        let ballRight = document.querySelector('.slider__range-handle._right')
+        let ballWrapp = document.querySelector('.slider__range-btn')
+        let rect = ballWrapp.getBoundingClientRect();
+        let ballPosLeft = 0;
+        let ballPosRight = rect.width - ballRight.getBoundingClientRect().width;
+
+        document.querySelector('.max-slider').addEventListener('change', function(e){
+            
+
+            let dlinna = maxPrice - minPrice;
+            let proc = (e.target.value - minPrice) * 100 / dlinna;
+
+            ballPosRight = (rect.width - ball.getBoundingClientRect().width - ball.getBoundingClientRect().width) / 100 * proc + ball.getBoundingClientRect().width;
+            document.querySelector('.slider__range-active').style.background = `linear-gradient(90deg, grey 0%, grey ${ballPosLeft + ball.getBoundingClientRect().width}px, blue ${ballPosLeft + ball.getBoundingClientRect().width}px, blue ${ballPosRight}px, ${ballPosRight}px, grey 100%)`;
+            ballRight.style.left = `${ballPosRight}px`;
+
+            e.target.value = Math.max(minPrice, Math.min(maxPrice, e.target.value))
+
+        });
+
+        ballRight.onmousedown = function (event) { // (1) отследить нажатие
+            let shiftX = event.clientX - ballRight.getBoundingClientRect().left;
+
+            moveAt(event.pageX - rect.left);
+
+            // передвинуть мяч под координаты курсора
+            // и сдвинуть на половину ширины/высоты для центрирования
+            function moveAt(pageX) {
+                ballPosRight = Math.max(ballPosLeft + ball.getBoundingClientRect().width, Math.min(rect.width - ballRight.getBoundingClientRect().width, pageX - shiftX));
+                ballRight.style.left = `${ballPosRight}px`;
+                document.querySelector('.slider__range-active').style.background = `linear-gradient(90deg, grey 0%, grey ${ballPosLeft + ball.getBoundingClientRect().width}px, blue ${ballPosLeft + ball.getBoundingClientRect().width}px, blue ${ballPosRight}px, ${ballPosRight}px, grey 100%)`;
+                let dlinna = rect.width - ball.getBoundingClientRect().width - ball.getBoundingClientRect().width;
+
+                let proc = (ballPosRight - ball.getBoundingClientRect().width) * 100 / dlinna;
+                document.querySelector('.max-slider').value = Math.round((maxPrice - minPrice) / 100 * proc + minPrice) ;
+            }
+
+            function onMouseMove(event) {
+                moveAt(event.pageX - rect.left);
+            }
+
+            // (3) перемещать по экрану
+            document.addEventListener('mousemove', onMouseMove);
+
+            document.onmouseup = function () {
+                document.removeEventListener('mousemove', onMouseMove);
+                ballRight.onmouseup = null;
+            };
+        };
+
+        ball.onmousedown = function (event) { // (1) отследить нажатие
+
+            // (2) подготовить к перемещению:
+            // разместить поверх остального содержимого и в абсолютных координатах
+            //ball.style.position = 'absolute';
+            //ball.style.zIndex = 1000;
+            // переместим в body, чтобы мяч был точно не внутри position:relative
+            //document.body.append(ball);
+            // и установим абсолютно спозиционированный мяч под курсор
+            let shiftX = event.clientX - ball.getBoundingClientRect().left;
+
+            moveAt(event.pageX - rect.left);
+
+            // передвинуть мяч под координаты курсора
+            // и сдвинуть на половину ширины/высоты для центрирования
+            function moveAt(pageX) {
+
+                ballPosLeft = Math.max(0, Math.min(ballPosRight - ballRight.getBoundingClientRect().width, pageX - shiftX));
+                ball.style.left = `${ballPosLeft}px`;
+
+                document.querySelector('.slider__range-active').style.background = `linear-gradient(90deg, grey 0%, grey ${ballPosLeft + ball.getBoundingClientRect().width}px, blue ${ballPosLeft + ball.getBoundingClientRect().width}px, blue ${ballPosRight}px, ${ballPosRight}px, grey 100%)`;
+            }
+
+            function onMouseMove(event) {
+                moveAt(event.pageX - rect.left);
+            }
+
+            // (3) перемещать по экрану
+            document.addEventListener('mousemove', onMouseMove);
+
+            // (4) положить мяч, удалить более ненужные обработчики событий
+            document.onmouseup = function () {
+                document.removeEventListener('mousemove', onMouseMove);
+                ball.onmouseup = null;
+            };
+        };
+
+        document.ondragstart = function () {
+            return false;
+        };
+
+
+    })
+</script>
