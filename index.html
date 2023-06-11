@@ -78,16 +78,17 @@
         }
     </style>
 </head>
+
 <body>
     <div class="filter__param-values">
         <div class="slider">
             <div class="slider__value">
                 <div class="slider__value-item _min">
-                    <label for="minPrice">От 60</label>
+                    <label for="minPrice">От 60</label><br>
                     <input class="min-slider" type="text" name="minPrice" id="minPrice>" placeholder="60" size="5">
                 </div>
                 <div class="slider__value-item _max">
-                    <label for="maxPrice">До 690723</label>
+                    <label for="maxPrice">До 690723</label><br>
                     <input class="max-slider" type="text" name="maxPrice" id="maxPrice" placeholder="690723" size="5">
                 </div>
             </div>
@@ -200,72 +201,51 @@
                 };
             };
 
-            ballRight.ontouchstart = function (event) { // (1) отследить нажатие
-                let shiftX = event.clientX - ballRight.getBoundingClientRect().left;
 
-                moveAt(event.pageX - rect.left);
+            ballRight.addEventListener('touchstart', function (event) {
+                let shiftX = event.touches[0].clientX - ballRight.getBoundingClientRect().left;
 
-                // передвинуть мяч под координаты курсора
-                // и сдвинуть на половину ширины/высоты для центрирования
                 function moveAt(pageX) {
                     ballPosRight = Math.max(ballPosLeft + ball.getBoundingClientRect().width, Math.min(rect.width - ballRight.getBoundingClientRect().width, pageX - shiftX));
-                    ballRight.style.left = `${ballPosRight}px`;
-                    document.querySelector('.slider__range-active').style.background = `linear-gradient(90deg, grey 0%, grey ${ballPosLeft + ball.getBoundingClientRect().width}px, blue ${ballPosLeft + ball.getBoundingClientRect().width}px, blue ${ballPosRight}px, ${ballPosRight}px, grey 100%)`;
+                    ballRight.style.left = ballPosRight + 'px';
+                    document.querySelector('.slider__range-active').style.background = 'linear-gradient(90deg, grey 0%, grey ' + (ballPosLeft + ball.getBoundingClientRect().width) + 'px, blue ' + (ballPosLeft + ball.getBoundingClientRect().width) + 'px, blue ' + ballPosRight + 'px, ' + ballPosRight + 'px, grey 100%)';
                     let dlinna = rect.width - ball.getBoundingClientRect().width - ball.getBoundingClientRect().width;
-
                     let proc = (ballPosRight - ball.getBoundingClientRect().width) * 100 / dlinna;
                     document.querySelector('.max-slider').value = Math.round((maxPrice - minPrice) / 100 * proc + minPrice);
                 }
 
-                function onMouseMove(event) {
-                    moveAt(event.pageX - rect.left);
+                function onTouchMove(event) {
+                    moveAt(event.touches[0].pageX - rect.left);
                 }
 
-                // (3) перемещать по экрану
-                document.addEventListener('touchmove', onMouseMove);
+                ballRight.addEventListener('touchmove', onTouchMove);
 
-                document.ontouchend = function () {
-                    document.removeEventListener('touchmove', onMouseMove);
-                    ballRight.onmouseup = null;
-                };
-            };
+               /*  ballRight.addEventListener('touchend', function () {
+                    ballRight.removeEventListener('touchmove', onTouchMove);
+                    ballRight.removeEventListener('touchend');
+                }); */
+            });
 
-            ball.ontouchstart = function (event) { // (1) отследить нажатие
+            ball.addEventListener('touchstart', function (event) {
+                let shiftX = event.touches[0].clientX - ball.getBoundingClientRect().left;
 
-                // (2) подготовить к перемещению:
-                // разместить поверх остального содержимого и в абсолютных координатах
-                //ball.style.position = 'absolute';
-                //ball.style.zIndex = 1000;
-                // переместим в body, чтобы мяч был точно не внутри position:relative
-                //document.body.append(ball);
-                // и установим абсолютно спозиционированный мяч под курсор
-                let shiftX = event.clientX - ball.getBoundingClientRect().left;
-
-                moveAt(event.pageX - rect.left);
-
-                // передвинуть мяч под координаты курсора
-                // и сдвинуть на половину ширины/высоты для центрирования
                 function moveAt(pageX) {
-
                     ballPosLeft = Math.max(0, Math.min(ballPosRight - ballRight.getBoundingClientRect().width, pageX - shiftX));
-                    ball.style.left = `${ballPosLeft}px`;
-
-                    document.querySelector('.slider__range-active').style.background = `linear-gradient(90deg, grey 0%, grey ${ballPosLeft + ball.getBoundingClientRect().width}px, blue ${ballPosLeft + ball.getBoundingClientRect().width}px, blue ${ballPosRight}px, ${ballPosRight}px, grey 100%)`;
+                    ball.style.left = ballPosLeft + 'px';
+                    document.querySelector('.slider__range-active').style.background = 'linear-gradient(90deg, grey 0%, grey ' + (ballPosLeft + ball.getBoundingClientRect().width) + 'px, blue ' + (ballPosLeft + ball.getBoundingClientRect().width) + 'px, blue ' + ballPosRight + 'px, ' + ballPosRight + 'px, grey 100%)';
                 }
 
-                function onMouseMove(event) {
-                    moveAt(event.pageX - rect.left);
+                function onTouchMove(event) {
+                    moveAt(event.touches[0].pageX - rect.left);
                 }
 
-                // (3) перемещать по экрану
-                document.addEventListener('touchmove', onMouseMove);
+                ball.addEventListener('touchmove', onTouchMove);
 
-                // (4) положить мяч, удалить более ненужные обработчики событий
-                document.ontouchend = function () {
-                    document.removeEventListener('touchmove', onMouseMove);
-                    ball.onmouseup = null;
-                };
-            };
+                ball.addEventListener('touchend', function () {
+                    //ball.removeEventListener('touchmove', onTouchMove);
+                    //ball.removeEventListener('touchend');
+                });
+            });
 
             document.ondragstart = function () {
                 return false;
