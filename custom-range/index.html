@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0 maximum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: sans-serif;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+        }
+
+        .filter__param-values {
+            max-height: 500px;
+            opacity: 1;
+        }
+
+        .slider {
+            padding: 50px;
+        }
+
+        .slider__value {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 35px;
+            position: relative;
+        }
+
+        .slider__range {
+            position: relative;
+            height: 6px;
+            margin-bottom: 20px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: blue;
+            background: linear-gradient(90deg, grey 0%, grey 0%, blue 0%, blue 100%, grey 100%, grey 100%);
+            background-size: 100%;
+        }
+
+        .slider__range-handle {
+            --size-ball: 24px;
+            display: flex;
+            width: var(--size-ball);
+            height: var(--size-ball);
+            position: absolute;
+            left: auto;
+            right: auto;
+            background: blue;
+            border: solid 2px #fff;
+            border-radius: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Custom input range</h1>
+    <div class="filter__param-values">
+        <div class="slider">
+            <div class="slider__value">
+                <div class="slider__value-item _min">
+                    <label for="minPrice">От </label><br>
+                    <input class="min-slider" type="text" name="minPrice" id="minPrice>" placeholder="" size="5">
+                </div>
+                <div class="slider__value-item _max">
+                    <label for="maxPrice">До </label><br>
+                    <input class="max-slider" type="text" name="maxPrice" id="maxPrice" placeholder="" size="5">
+                </div>
+            </div>
+
+            <div class="slider__range">
+                <a class="slider__range-handle _left" style="left:0;" href="javascript:void(0)" id="left_slider_"></a>
+                <a class="slider__range-handle _right" style="right:0;" href="javascript:void(0)" id="right_slider_"></a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        //ограничение значения 
+        function minMax(value, min, max) {
+            return Math.max(min, Math.min(max, value))
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            let leftSlider = document.querySelector('.slider__range-handle._left'),
+                rightSlider = document.querySelector('.slider__range-handle._right'),
+                tracker = document.querySelector('.slider__range'),
+                minInput = document.querySelector('.min-slider'),
+                maxInput = document.querySelector('.max-slider'),
+                minPrice = 60,
+                maxPrice = 690723;
+
+            document.querySelector('.slider__value-item._min label').innerHTML = `От ${minPrice}`;
+            document.querySelector('.slider__value-item._min input').placeholder = minPrice;
+            document.querySelector('.slider__value-item._max label').innerHTML = `От ${maxPrice}`;
+            document.querySelector('.slider__value-item._max input').placeholder = maxPrice;
+
+
+            function updateTrack(left, right) {
+                return tracker.style.background = `linear-gradient(90deg, grey 0%, grey ${left}px, blue ${left}px, blue ${right}px, ${right}px, grey 100%)`;
+            }
+
+            let leftSliderWidth = leftSlider.getBoundingClientRect().width,
+                rightSliderWidth = rightSlider.getBoundingClientRect().width,
+                trackerWidth = tracker.getBoundingClientRect().width,
+                trackerLeft = tracker.getBoundingClientRect().left,
+                trackerRight = tracker.getBoundingClientRect().right,
+                posLeft = 0 + leftSliderWidth,
+                posRight = trackerWidth - rightSliderWidth;
+
+            function inputValue(position) {
+                if (Math.round((maxPrice - minPrice) / 100 * ((position - leftSliderWidth) * 100 / (trackerWidth - leftSliderWidth - rightSliderWidth)) + minPrice) != minPrice && Math.round((maxPrice - minPrice) / 100 * ((position - leftSliderWidth) * 100 / (trackerWidth - leftSliderWidth - rightSliderWidth)) + minPrice) != maxPrice)
+                    return Math.round((maxPrice - minPrice) / 100 * ((position - leftSliderWidth) * 100 / (trackerWidth - leftSliderWidth - rightSliderWidth)) + minPrice);
+                else
+                    return '';
+            }
+
+            function moveAtLeft(pageX, shiftX) {
+                posLeft = minMax(pageX - shiftX + leftSliderWidth, leftSliderWidth, trackerWidth - rightSliderWidth);
+                leftSlider.style.left = `${posLeft - leftSliderWidth}px`;
+                if (posLeft >= posRight) {
+                    posRight = minMax(pageX - shiftX, posLeft, trackerWidth - rightSliderWidth);
+                    rightSlider.style.left = `${posLeft}px`;
+                    maxInput.value = inputValue(posRight);
+                }
+                updateTrack(posLeft, posRight);
+                minInput.value = inputValue(posLeft);
+            }
+
+            function moveAtRight(pageX, shiftX) {
+                posRight = minMax(pageX - shiftX, posLeft, trackerWidth - rightSliderWidth);
+                rightSlider.style.left = `${posRight}px`;
+                if (posLeft >= posRight) {
+                    posLeft = minMax(pageX - shiftX, leftSliderWidth, trackerWidth - rightSliderWidth);
+                    leftSlider.style.left = `${posLeft - leftSliderWidth}px`;
+                    minInput.value = inputValue(posLeft);
+                }
+                updateTrack(posLeft, posRight);
+                maxInput.value = inputValue(posRight);
+            }
+
+            leftSlider.addEventListener('mousedown', function (event) {
+                let shiftX = event.clientX - leftSlider.getBoundingClientRect().left;
+                moveAtLeft(event.pageX - trackerLeft, shiftX);
+                function onMouseMove(event) {
+                    moveAtLeft(event.pageX - trackerLeft, shiftX);
+                }
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', function () {
+                    document.removeEventListener('mousemove', onMouseMove);
+                    leftSlider.onmouseup = null;
+                });
+            });
+
+            leftSlider.addEventListener('touchstart', function (event) {
+                let shiftX = event.touches[0].clientX - leftSlider.getBoundingClientRect().left;
+                function onTouchMove(event) {
+                    moveAtLeft(event.touches[0].pageX - trackerLeft, shiftX);
+                }
+                leftSlider.addEventListener('touchmove', onTouchMove);
+                leftSlider.addEventListener('touchend', function () {
+                    leftSlider.removeEventListener('touchmove', onTouchMove);
+                });
+            });
+
+            rightSlider.addEventListener('mousedown', function (event) {
+                let shiftX = event.clientX - rightSlider.getBoundingClientRect().left;
+                moveAtRight(event.pageX - trackerLeft, shiftX);
+                function onMouseMove(event) {
+                    moveAtRight(event.pageX - trackerLeft, shiftX);
+                }
+                document.addEventListener('mousemove', onMouseMove);
+                document.onmouseup = function () {
+                    document.removeEventListener('mousemove', onMouseMove);
+                    rightSlider.onmouseup = null;
+                };
+            });
+
+            rightSlider.addEventListener('touchstart', function (event) {
+                let shiftX = event.touches[0].clientX - rightSlider.getBoundingClientRect().left;
+
+                function onTouchMove(event) {
+                    moveAtRight(event.touches[0].pageX - trackerLeft, shiftX);
+                }
+
+                rightSlider.addEventListener('touchmove', onTouchMove);
+
+                rightSlider.addEventListener('touchend', function () {
+                    rightSlider.removeEventListener('touchmove', onTouchMove);
+                });
+            });
+
+            document.ondragstart = function () {
+                return false;
+            };
+
+            maxInput.addEventListener('change', function (e) {
+                posRight = (trackerWidth - leftSliderWidth - rightSliderWidth) / 100 * ((this.value - minPrice) * 100 / (maxPrice - minPrice)) + leftSliderWidth;
+                rightSlider.style.left = `${posRight}px`;
+                updateTrack(posLeft, posRight)
+                this.value = minMax(this.value, minPrice, maxPrice);
+            });
+
+            minInput.addEventListener('change', function (e) {
+                posLeft = (trackerWidth - leftSliderWidth - rightSliderWidth) / 100 * ((this.value - minPrice) * 100 / (maxPrice - minPrice)) + leftSliderWidth;
+                leftSlider.style.left = `${posLeft - leftSliderWidth}px`;
+                updateTrack(posLeft, posRight)
+                this.value = minMax(this.value, minPrice, maxPrice);
+            });
+        })
+    </script>
+</body>
+
+</html>
